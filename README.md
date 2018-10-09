@@ -1,7 +1,7 @@
 # Network-Analyzer
 
 
-Team Members
+Team Members:
 Artem
 Chris
 Laura
