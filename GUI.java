@@ -1,192 +1,254 @@
-import java.awt.EventQueue;
+package GUI;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import java.awt.*;
+import java.util.LinkedList;
 
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.Color;
-import java.awt.SystemColor;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class GUI {
-	
-	private JFrame frame;
-	private JTextField acttextField;
-	private JTextField durtextField_1;
-	private JTextField deptextField_2;
-	
-	public String aName;
-	public int aDuration;
-	public char aDepend;
-	
 
-	/**
-	 * Launch the application.
-	 */
-	public LinkedList activities = new LinkedList();
+public class GUI extends JFrame{
+
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI window = new GUI();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	// GUI componenets
+	JTextArea	activityTextArea	=new JTextArea();
+	
+	
+	JLabel 		nameLabel				=new JLabel		("Name: ");
+	JTextField	nameTextField			=new JTextField (8);	
+	JLabel 		durationLabel			=new JLabel		("Duration: ");
+	JTextField	durationTextField		=new JTextField (3);
+	JLabel 		dependenciesLabel		=new JLabel		("Dependencies: ");
+	JTextField	dependenciesTextField	=new JTextField (8);	
+	
+	
+	
+	JButton addButton			=new JButton("Add");
+	JButton displayAllButton	=new JButton("Process");
+	JButton restartButton		=new JButton("Restart");
+	JButton exitButton			=new JButton("Exit");
+	
+	
+	//class Data
+	
+	private LinkedList<Activity> activityList=new LinkedList();
+	
+	
+	public GUI()
+	{
+		JPanel flow1Panel=new JPanel(new FlowLayout (FlowLayout.CENTER));
+		JPanel flow2Panel=new JPanel(new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel gridPanel =new JPanel(new GridLayout(2,1));
+		
+		activityTextArea.setEditable(false);
+		
+		flow1Panel.add(nameLabel);
+		flow1Panel.add(nameTextField);
+		flow1Panel.add(durationLabel);
+		flow1Panel.add(durationTextField);
+		flow1Panel.add(dependenciesLabel);
+		flow1Panel.add(dependenciesTextField);
+		
+		
+		flow2Panel.add(addButton);
+		flow2Panel.add(displayAllButton);
+		flow2Panel.add(restartButton);
+		flow2Panel.add(exitButton);
+		
+		gridPanel.add(flow1Panel);
+		gridPanel.add(flow2Panel);
+		
+		add (activityTextArea, BorderLayout.CENTER);
+		add (gridPanel,BorderLayout.SOUTH);
+		
+		addButton.addActionListener			(event -> addActivity());
+		displayAllButton.addActionListener	(event -> displayAll());
+		exitButton.addActionListener		(event -> exitApp());
+		restartButton.addActionListener		(event -> restartActivity());
+
+	
 	}
-
-	/**
-	 * Create the application.
-	 */
-	public GUI() {
-		initialize();
+	
+	private void addActivity()
+	{
 		
+		boolean isInt=false;
+		if(!isInt) {
+			try { 
+		        Integer.parseInt(durationTextField.getText());
+		        isInt=true;
+		    } catch(NumberFormatException e) { 
+				JOptionPane.showMessageDialog(null, "Error: Duration must be an Integer");
+				return;
+		    }
+		}
+		boolean isUnique=true;
+		for(Activity act : activityList) {
+			if(act.getName().compareToIgnoreCase(nameTextField.getText())==0)
+				isUnique=false;
+		}
 		
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		
-		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		
-		
-		JMenuBar menuBar = new JMenuBar();//creating the menu bar
-		JMenu menu1 = new JMenu("File");//creating the first menu
-		JMenuItem exitItem = new JMenuItem("Exit");
-		
-		exitItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}	
-		});
-		
-		
-		JMenuItem restartItem = new JMenuItem("Restart");
-		//actionListener
-		
-		menu1.add(restartItem);
-		menu1.add(exitItem);
-		menuBar.add(menu1);
-
-				
-		JMenu menu2 = new JMenu("About");
-		JMenuItem about = new JMenuItem("Program created by Artem, Chris and Laura");
-		menu2.add(about);
-		menuBar.add(menu2);	
-		
-		JMenu menu3 = new JMenu("Help");
-		JMenuItem helpName = new JMenuItem("Something about the name");
-		JMenuItem helpDuration = new JMenuItem("Duration should be an integer");
-		JMenuItem helpDepend = new JMenuItem("Enter dependencies separating with an space/comma");
-		JMenuItem helpAdd = new JMenuItem("Add will enter the information into the Network");
-		JMenuItem helpCreate = new JMenuItem("Press create after all the Nodes have been entered");
-		menu3.add(helpName);
-		menu3.add(helpDuration);
-		menu3.add(helpDepend);
-		menu3.add(helpAdd);
-		menu3.add(helpCreate);
-		menuBar.add(menu3);	
-		
-		
-		frame.setJMenuBar(menuBar);		
-				
-		JLabel ActivityNameLabel = new JLabel("Activity Name:");
-		ActivityNameLabel.setFont(new Font("Chalkboard", Font.BOLD, 20));
-		ActivityNameLabel.setBounds(6, 6, 156, 74);
-		frame.getContentPane().add(ActivityNameLabel);
-		
-		JLabel DurationLabel = new JLabel("Duration:");
-		DurationLabel.setFont(new Font("Chalkboard", Font.BOLD, 20));
-		DurationLabel.setBounds(6, 85, 112, 29);
-		frame.getContentPane().add(DurationLabel);
-		
-		JLabel ListOfDependenciesLabel = new JLabel("List Of Dependencies:");
-		ListOfDependenciesLabel.setFont(new Font("Chalkboard", Font.BOLD, 20));
-		ListOfDependenciesLabel.setBounds(6, 136, 238, 29);
-		frame.getContentPane().add(ListOfDependenciesLabel);
-		
-		JLabel NetworkAnalyzerLabel = new JLabel("Network Analyzer");
-		NetworkAnalyzerLabel.setFont(new Font("Chalkboard", Font.PLAIN, 15));
-		NetworkAnalyzerLabel.setBounds(182, 6, 139, 20);
-		frame.getContentPane().add(NetworkAnalyzerLabel);
-		
-		JButton btnEnterAnotherActivity = new JButton("Enter another activity");
-		btnEnterAnotherActivity.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
+		if(isUnique==false)
+			JOptionPane.showMessageDialog(null, "Error: Activity already in database");
+	
+		else {		
 			
-				
-				aName = acttextField.getText();
-				aDuration= Integer.parseInt(durtextField_1.getText());
-				aDepend= deptextField_2.getText().charAt(0);
-				
-				activities.insertLink(aName, aDuration, aDepend);
-				 
-				
-				activities.display();
-				System.out.println(aDepend);
-				
-			}
-		});
-		
-		
-		
-		
-		btnEnterAnotherActivity.setBackground(SystemColor.windowBorder);
-		btnEnterAnotherActivity.setBounds(115, 211, 190, 29);
-		frame.getContentPane().add(btnEnterAnotherActivity);
-		
-		JButton btnCreateDiagram = new JButton("Create Diagram");
-		btnCreateDiagram.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				GUIoutput out = new GUIoutput();
-				out.setVisible(true);
-				
-				
-				
-			}
-		});
-		btnCreateDiagram.setBounds(306, 211, 138, 29);
-		frame.getContentPane().add(btnCreateDiagram);
-		
-		JButton btnExit = new JButton("Exit");
-		btnExit.setBounds(0, 211, 117, 29);
-		frame.getContentPane().add(btnExit);
-		
-		
-		//activity name field
-		acttextField = new JTextField();
-		acttextField.setBounds(175, 32, 130, 26);
-		frame.getContentPane().add(acttextField);
-		acttextField.setColumns(10);
-	
-		//activity duration field
-		durtextField_1 = new JTextField();
-		durtextField_1.setBounds(175, 88, 130, 26);
-		frame.getContentPane().add(durtextField_1);
-		durtextField_1.setColumns(10);
-		
-		//activity dependencies field
-		deptextField_2 = new JTextField();
-		deptextField_2.setBounds(222, 139, 83, 61);
-		frame.getContentPane().add(deptextField_2);
-		deptextField_2.setColumns(10);
-		 
+			activityList.add(new Activity(nameTextField.getText(), Integer.parseInt(durationTextField.getText()), dependenciesTextField.getText()));
+			nameTextField.setText("");
+			durationTextField.setText("");
+			dependenciesTextField.setText("");
+		}
 		
 	}
+	private void displayAll()
+	{	
+		boolean connected=true;
+		int count=0;
+		for(Activity act : activityList) {
+			if(act.getDependencies().length()!=0)
+			{
+				String[] currDependencies = act.getDependencies().split("\\s+");
+				activityTextArea.append(currDependencies[0] + "\n");
+				boolean match=false;
+				for(Activity act2 : activityList) {
+					for(int i=0;i<currDependencies.length;i++)
+					{
+						if(act2.getName().compareToIgnoreCase(currDependencies[i])==0 || currDependencies[i]=="")
+						{
+							match=true;
+						}
+					}		
+				}
+				if(!match)
+					connected=false;
+			}
+			else if(act.getDependencies().length()==0) {
+				count++;
+			}
+		}	
+		if(connected==false || count>1) 
+		{	
+			JOptionPane.showMessageDialog(null, "Error: Nodes are not connected, restartarting the program");
+			restartActivity();
+			return;
+		}
+		
+		
+		activityTextArea.setText("Name\tDuration\tDependencies\n");
+		for(Activity act : activityList) {
+			activityTextArea.append(act + "\n");
+		}
+		
+/*	
+		for(Activity act : activityList) 
+		{
+			if(act.getDependencies().length()==0)
+				activityTextArea.append(process(act));
+
+		}
+			
+	}
+	
+	private void process(Activity first){
+	/*	String all="";
+		String full="";
+		for(Activity act : activityList) 
+		{
+		String[] currDependencies = act.getDependencies().split("\\s+");
+			for(int i=0;i<currDependencies.length;i++)
+			{
+				String partial;
+				if(currDependencies[i].compareToIgnoreCase(first.getName())==0)
+				{
+					partial=(first.getName()+ " " + process(act));
+				}
+				else 
+				{
+					partial= first.getName();
+				}
+				full+=partial+"";
+			}
+			all+=full + "\n";
+		}
+		return all;
+	}
+	private void deleteActivity() 
+	{
+		boolean isUnique=true;
+		for(Activity act : activityList) {
+			if(act.getName().compareToIgnoreCase(nameTextField.getText())==0)
+				isUnique=false;
+		}
+		
+		if(isUnique) 
+		{
+			for(int i=0; i<activityList.size();i++)
+			{
+				String currName=activityList.get(i).getName();
+				if(currName.compareToIgnoreCase(nameTextField.getText())==0) 
+				{
+					activityList.remove(i);
+					
+				}
+				
+			}
+			
+			
+			
+			
+		}
+		
+
+		
+
+for(int r=0; r<activityList.size(); r++)
+{
+	String[] currDependencies = activityList.get(r).getDependencies().split("\\s+");
+	for(int i=0;i<currDependencies.length;i++)
+	{
+		if(first.getName()==currDependencies[i])
+		{
+			activityTextArea.append(" --> " + activityList.get(r).getName());
+			process(activityList.get(r));
+		}	
+
+	}
+		
+}
+*/	
+
+}
+	
+	private void restartActivity()
+	{
+		
+		while (!activityList.isEmpty()) {
+			activityList.removeFirst();
+	    }
+		nameTextField.setText("");
+		durationTextField.setText("");
+		dependenciesTextField.setText("");
+		activityTextArea.setText("");
+		
+		
+		
+	}
+	
+	
+	private void exitApp()
+	{	
+		System.exit(0);	
+	}
+	
+
+	
+	public static void main(String[] args)
+	{
+		GUI app=new GUI();
+		app.setVisible(true);
+		app.setSize(500,500);
+		app.setLocation(200,100);
+		app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
 }
