@@ -2,6 +2,10 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.Color;
@@ -45,6 +49,8 @@ public class GUI {
 	 */
 	public GUI() {
 		initialize();
+		
+		
 	}
 
 	/**
@@ -58,6 +64,27 @@ public class GUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		
+		JMenuBar menuBar = new JMenuBar();//creating the menu bar
+		JMenu menu1 = new JMenu("File");//creating the first menu
+		JMenuItem exitItem = new JMenuItem("Exit");
+		
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}	
+		});
+		menu1.add(exitItem);
+		menuBar.add(menu1);
+
+				
+		JMenu menu2 = new JMenu("Help");
+		JMenuItem about = new JMenuItem("Program created by Artem, Chris and Laura");
+		menu2.add(about);
+		menuBar.add(menu2);	
+		
+		frame.setJMenuBar(menuBar);		
+				
 		JLabel ActivityNameLabel = new JLabel("Activity Name:");
 		ActivityNameLabel.setFont(new Font("Chalkboard", Font.BOLD, 20));
 		ActivityNameLabel.setBounds(6, 6, 156, 74);
