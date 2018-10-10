@@ -74,14 +74,34 @@ public class GUI {
 				System.exit(0);
 			}	
 		});
+		
+		
+		JMenuItem restartItem = new JMenuItem("Restart");
+		//actionListener
+		
+		menu1.add(restartItem);
 		menu1.add(exitItem);
 		menuBar.add(menu1);
 
 				
-		JMenu menu2 = new JMenu("Help");
+		JMenu menu2 = new JMenu("About");
 		JMenuItem about = new JMenuItem("Program created by Artem, Chris and Laura");
 		menu2.add(about);
 		menuBar.add(menu2);	
+		
+		JMenu menu3 = new JMenu("Help");
+		JMenuItem helpName = new JMenuItem("Something about the name");
+		JMenuItem helpDuration = new JMenuItem("Duration should be an integer");
+		JMenuItem helpDepend = new JMenuItem("Enter dependencies separating with an space/comma");
+		JMenuItem helpAdd = new JMenuItem("Add will enter the information into the Network");
+		JMenuItem helpCreate = new JMenuItem("Press create after all the Nodes have been entered");
+		menu3.add(helpName);
+		menu3.add(helpDuration);
+		menu3.add(helpDepend);
+		menu3.add(helpAdd);
+		menu3.add(helpCreate);
+		menuBar.add(menu3);	
+		
 		
 		frame.setJMenuBar(menuBar);		
 				
