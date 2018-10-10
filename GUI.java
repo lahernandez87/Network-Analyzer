@@ -1,5 +1,7 @@
-package GUI;
+
  import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
  import javax.swing.*;
  public class GUI extends JFrame{
@@ -60,6 +62,52 @@ import java.util.LinkedList;
 		displayAllButton.addActionListener	(event -> displayAll());
 		exitButton.addActionListener		(event -> exitApp());
 		restartButton.addActionListener		(event -> restartActivity());
+		
+		
+		
+		
+		
+		//menuBar
+		JMenuBar menuBar = new JMenuBar();//creating the menu bar
+		//File with Exit/Restart is not added yet
+		JMenu menu1 = new JMenu("File");//creating the first menu
+		JMenuItem exitItem = new JMenuItem("Exit");
+		
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}	
+		});
+		
+		
+		JMenuItem restartItem = new JMenuItem("Restart");
+		//actionListener
+		
+		//menu1.add(restartItem);
+		//menu1.add(exitItem);
+		//menuBar.add(menu1);
+
+				
+		JMenu menu2 = new JMenu("About");
+		JMenuItem about = new JMenuItem("Program created by Artem, Chris and Laura");
+		menu2.add(about);
+		menuBar.add(menu2);	
+		
+		JMenu menu3 = new JMenu("Help");
+		JMenuItem helpName = new JMenuItem("Name can be multiple characters");
+		JMenuItem helpDuration = new JMenuItem("Duration should be an integer");
+		JMenuItem helpDepend = new JMenuItem("Enter dependencies separated by an space");
+		JMenuItem helpAdd = new JMenuItem("Add will enter the information into the Network");
+		JMenuItem helpCreate = new JMenuItem("Press create after all the Nodes have been entered");
+		menu3.add(helpName);
+		menu3.add(helpDuration);
+		menu3.add(helpDepend);
+		menu3.add(helpAdd);
+		menu3.add(helpCreate);
+		menuBar.add(menu3);	
+		
+		setJMenuBar(menuBar);		
+		
  	
 	}
 	
