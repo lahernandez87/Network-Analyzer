@@ -104,7 +104,7 @@ public class GUI extends JFrame{
 		JMenuItem helpDuration = new JMenuItem("Duration should be an integer");
 		JMenuItem helpDepend = new JMenuItem("Enter dependencies separated by an space");
 		JMenuItem helpAdd = new JMenuItem("Add will enter the information into the Network");
-		JMenuItem helpCreate = new JMenuItem("Press create after all the Nodes have been entered");
+		JMenuItem helpCreate = new JMenuItem("Press Process after all the Nodes have been entered");
 		menu3.add(helpName);
 		menu3.add(helpDuration);
 		menu3.add(helpDepend);
@@ -392,6 +392,9 @@ if(count==0) {
 	    }
 		while (!ar.isEmpty()) {
 			ar.clear();
+	    }
+		while (!pathDuration.isEmpty()) {
+			pathDuration.clear();
 	    }
 		nameTextField.setText("");
 		durationTextField.setText("");
