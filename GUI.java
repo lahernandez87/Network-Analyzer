@@ -1,10 +1,14 @@
-
- import java.awt.*;
+package GUI;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
- import javax.swing.*;
- public class GUI extends JFrame{
+import java.util.Set;
+
+import javax.swing.*;
+public class GUI extends JFrame{
  	
 	// GUI componenets
 	JTextArea	activityTextArea	=new JTextArea();
@@ -26,10 +30,9 @@ import java.util.LinkedList;
 	
 	
 	//class Data
-	
+	ArrayList<String> ar = new ArrayList<String>();
+	ArrayList<Integer> pathDuration = new ArrayList<Integer>();
 	private LinkedList<Activity> activityList=new LinkedList();
-	
-	
 	public GUI()
 	{
 		JPanel flow1Panel=new JPanel(new FlowLayout (FlowLayout.CENTER));
@@ -59,7 +62,7 @@ import java.util.LinkedList;
 		add (gridPanel,BorderLayout.SOUTH);
 		
 		addButton.addActionListener			(event -> addActivity());
-		displayAllButton.addActionListener	(event -> displayAll());
+		displayAllButton.addActionListener	(event -> process());
 		exitButton.addActionListener		(event -> exitApp());
 		restartButton.addActionListener		(event -> restartActivity());
 		
@@ -90,7 +93,9 @@ import java.util.LinkedList;
 				
 		JMenu menu2 = new JMenu("About");
 		JMenuItem about = new JMenuItem("Program created by Artem, Chris and Laura");
+		JMenuItem about2=new JMenuItem("The purpose of this program is to create a list of paths from the user input");
 		menu2.add(about);
+		menu2.add(about2);
 		menuBar.add(menu2);	
 		
 		JMenu menu3 = new JMenu("Help");
@@ -144,36 +149,6 @@ import java.util.LinkedList;
 	}
 	private void displayAll()
 	{	
-		boolean connected=true;
-		int count=0;
-		for(Activity act : activityList) {
-			if(act.getDependencies().length()!=0)
-			{
-				String[] currDependencies = act.getDependencies().split("\\s+");
-				activityTextArea.append(currDependencies[0] + "\n");
-				boolean match=false;
-				for(Activity act2 : activityList) {
-					for(int i=0;i<currDependencies.length;i++)
-					{
-						if(act2.getName().compareToIgnoreCase(currDependencies[i])==0 || currDependencies[i]=="")
-						{
-							match=true;
-						}
-					}		
-				}
-				if(!match)
-					connected=false;
-			}
-			else if(act.getDependencies().length()==0) {
-				count++;
-			}
-		}	
-		if(connected==false || count>1) 
-		{	
-			JOptionPane.showMessageDialog(null, "Error: Nodes are not connected, restartarting the program");
-			restartActivity();
-			return;
-		}
 		
 		
 		activityTextArea.setText("Name\tDuration\tDependencies\n");
@@ -256,11 +231,150 @@ import java.util.LinkedList;
 */	
  }
 	
+private void process()
+{
+	
+	
+	boolean connected=true;
+	int count=0;
+	for(Activity act : activityList) {
+		if(act.getDependencies().length()!=0)
+		{
+			String[] currDependencies = act.getDependencies().split("\\s+");
+			boolean match=false;
+			for(Activity act2 : activityList) {
+				for(int i=0;i<currDependencies.length;i++)
+				{
+					if(act2.getName().compareToIgnoreCase(currDependencies[i])==0 || currDependencies[i]=="")
+					{
+						match=true;
+					}
+				}		
+			}
+			if(!match)
+				connected=false;
+		}
+		else if(act.getDependencies().length()==0) {
+			count++;
+		}
+	}
+	
+	if(connected==false || count>1) 
+	{	
+		JOptionPane.showMessageDialog(null, "Error: Nodes are not connected, restartarting the program");
+		restartActivity();
+		return;
+	}
+	
+	for(Activity act1 : activityList){
+		String[] act1Dependencies = act1.getDependencies().split("\\s+");
+		boolean cycle=false;
+		for(Activity act2 : activityList) 
+		{
+			for(int i=0;i<act1Dependencies.length;i++) 
+			{
+				if(act2.getName().equals(act1Dependencies[i]))
+				{	
+					String[] act2Dependencies = act2.getDependencies().split("\\s+");
+					for(int x=0; x<act2Dependencies.length; x++)
+					{
+						if(act1.getName().equals(act2Dependencies[x]))
+						{
+							JOptionPane.showMessageDialog(null, "Error: Input contains a cycle , restartarting the program");
+							restartActivity();
+							return;
+						}
+						
+						
+					}
+					
+					
+				}		
+			}
+			
+		}
+	}
+	
+	
+
+	for(Activity act : activityList) {
+		if(act.getDependencies().equals("")) {
+			export(act, act.getName(), act.getDuration());
+		}
+	}
+	
+	
+	String out="";
+	for(int i=0; i<ar.size();i++) {
+		out+= "Path #" + (i+1) + ": " + ar.get(i) + "\t Duration: " + pathDuration.get(i)+"\n";	
+
+	}
+	activityTextArea.append("\nList of Paths: \n\n" + out);
+}
+	
+	
+private void export(Activity first, String currPath, int currDuration) {
+int count=0;	
+for(int i=0; i<activityList.size();i++) {
+	String[] currDependencies = activityList.get(i).getDependencies().split("\\s+");
+	
+	for(int r=0;r<currDependencies.length;r++)
+	{
+		if(first.getName().equalsIgnoreCase(currDependencies[r]))
+		{
+				count++;
+				export(activityList.get(i), currPath+activityList.get(i).getName(), currDuration+activityList.get(i).getDuration());
+		}
+	}
+}
+
+if(count==0) {
+	boolean check= true;
+	for(int x=0; x<ar.size();x++)
+	{
+		if(ar.get(x).equalsIgnoreCase(currPath))
+				check=false;
+	}
+	if(check) {
+		if(pathDuration.size()>0) 
+		{
+			boolean added=false;
+			for(int i=0; i<pathDuration.size();i++)
+			{
+				if(pathDuration.get(i)<=currDuration)
+				{
+					ar.add(i,currPath);
+					pathDuration.add(i,currDuration);
+					added=true;
+					break;
+				}
+			}
+			if(!added)
+			{
+				ar.add(currPath);
+				pathDuration.add(currDuration);	
+
+			}
+		}
+		else
+		{
+			ar.add(currPath);
+			pathDuration.add(currDuration);	
+		}
+		}
+	}
+}
+
+	
+	
 	private void restartActivity()
 	{
 		
 		while (!activityList.isEmpty()) {
 			activityList.removeFirst();
+	    }
+		while (!ar.isEmpty()) {
+			ar.clear();
 	    }
 		nameTextField.setText("");
 		durationTextField.setText("");
