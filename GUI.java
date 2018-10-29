@@ -124,6 +124,15 @@ public class GUI extends JFrame{
 	 * addButton.addActionListener
 	 */
 	private void addActivity(){
+		//clears the arrayList so you can add after you process the path
+		while (!pathDuration.isEmpty()) {
+			pathDuration.clear();
+	    }
+		while (!ar.isEmpty()) {
+			ar.clear();
+	    }
+		largeCycle=false;	
+		
 		
 		boolean isInt=false;
 		if(!isInt) {
@@ -167,6 +176,9 @@ public class GUI extends JFrame{
 	 * 
 	 */
 	private void process(){
+		//refresh 
+		displayAll();
+		
 		boolean connected=true;
 		int count=0;
 		for(Activity act : activityList) {
@@ -193,7 +205,7 @@ public class GUI extends JFrame{
 		
 		if(connected==false || count>1) 
 		{	
-			JOptionPane.showMessageDialog(null, "Error: Nodes are not connected, restartarting the program");
+			JOptionPane.showMessageDialog(null, "Error: Nodes are not connected, restarting the program");
 			restartActivity();
 			return;
 		}
@@ -210,7 +222,7 @@ public class GUI extends JFrame{
 						{
 							if(act1.getName().equals(act2Dependencies[x]))
 							{
-								JOptionPane.showMessageDialog(null, "Error: Input contains a cycle , restartarting the program");
+								JOptionPane.showMessageDialog(null, "Error: Input contains a cycle , restarting the program");
 								restartActivity();
 								return;
 							}					
@@ -227,7 +239,7 @@ public class GUI extends JFrame{
 			}
 		}
 		if(largeCycle){
-			JOptionPane.showMessageDialog(null, "Error: Input contains a cycle , restartarting the program");
+			JOptionPane.showMessageDialog(null, "Error: Input contains a cycle , restarting the program");
 			restartActivity();
 			return;
 		}
@@ -243,19 +255,34 @@ public class GUI extends JFrame{
 	 * 
 	 */
 	private void criticalPath(){
+		//refresh 
+		displayAll();
 		
+
+		// needs to be updated to only display the critical path
+		
+			
+		activityTextArea.append("\nCritical Paths is/are: \n\n");
 	}	
 	/*
-	 * 
+	 * Text file creation
 	 */
 	private void exportText(){
 		
 	}	
 	/*
-	 * 
-	 * change
+	 * change the Path Duration
 	 */
 	private void changeDuration(){
+		//clear path duration
+		while (!pathDuration.isEmpty()) {
+			pathDuration.clear();
+	    }
+		while (!ar.isEmpty()) {
+			ar.clear();
+	    }
+		largeCycle=false;	
+		
 		boolean isInt=false;
 		if(!isInt) {
 			try { 
@@ -271,7 +298,7 @@ public class GUI extends JFrame{
 		for(Activity act : activityList) {
 			if(act.getName().compareToIgnoreCase(cNameTextField.getText())==0)
 			{
-				//act.setDuration(Integer.parseInt(durationTextField.getText()));
+				act.setDuration(Integer.parseInt(cDurationTextField.getText()));
 				isUnique=false;			
 			}
 			
@@ -386,11 +413,10 @@ public class GUI extends JFrame{
 	{
 		JOptionPane.showMessageDialog(null, "The purpose of this program is to create a list of paths from the user input.  "
 											+ "Program created by Artem, Chris and Laura");
-		
-		
+			
 	}
 	/*
-	 * 
+	 * helpMenu.addActionListener
 	 */
 	private void helpMenu()
 	{
@@ -406,9 +432,7 @@ public class GUI extends JFrame{
 											+ "with the new duration, and click 'Change'\n\n"
 											+ "To send the information a Text File, enter your file name, \n"
 											+ "and click 'Text File'\n");
-		
-	
-		
+			
 	}
 	
 	/*
