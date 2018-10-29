@@ -40,9 +40,9 @@ package GUI;
 		this.name=name;
 	}
 	
-	public void setDuration(String duration)
+	public void setDuration(int duration)
 	{
-		this.name=duration;
+		this.duration=duration;
 	}
 	
 	public void setDependencies(String dependencies) 

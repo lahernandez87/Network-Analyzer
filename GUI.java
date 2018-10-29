@@ -252,6 +252,7 @@ public class GUI extends JFrame{
 		
 	}	
 	/*
+	 * 
 	 * change
 	 */
 	private void changeDuration(){
@@ -270,9 +271,7 @@ public class GUI extends JFrame{
 		for(Activity act : activityList) {
 			if(act.getName().compareToIgnoreCase(cNameTextField.getText())==0)
 			{
-				//activityList.set(act, ((Activity) activityList).setDuration(Integer.parseInt(cDurationTextField.getText())));
-				//activityList.set(act).setDuration(Integer.parseInt(cDurationTextField.getText());
-				//set(int index, E element)
+				//act.setDuration(Integer.parseInt(durationTextField.getText()));
 				isUnique=false;			
 			}
 			
@@ -290,8 +289,8 @@ public class GUI extends JFrame{
 			JOptionPane.showMessageDialog(null, "Error:  Path name does not exist");
 					
 		
-			
-		
+		//refresh the Text Area	
+		displayAll();
 	}
 	
 	/*
