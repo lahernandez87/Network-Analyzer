@@ -1,12 +1,20 @@
-package GUI;
+package phase;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.swing.*;
 import java.util.ArrayList;
+
 //import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 //import java.util.Set;
+import java.util.*;
+
 
 
 public class GUI extends JFrame{
@@ -35,13 +43,17 @@ public class GUI extends JFrame{
 	
 	JLabel	exportLabel			=new JLabel("Text File Name:");
 	JTextField exportTextField	=new JTextField(30);
-	JButton exportTextButton	=new JButton("Text File");
+	JButton exportTextButton	=new JButton("Create");
 		
 	//class Data
 	boolean largeCycle=false;
 	ArrayList<String> ar 						=new ArrayList<String>();
 	ArrayList<Integer> pathDuration 			=new ArrayList<Integer>();
 	private LinkedList<Activity> activityList	=new LinkedList();
+	
+	 Map<String, Integer> paths = new HashMap<String, Integer>();
+	 String filename;
+
 	
 	/*
 	 * Constructor
@@ -96,7 +108,14 @@ public class GUI extends JFrame{
 		restartButton.addActionListener		(event -> restartActivity());
 		exitButton.addActionListener		(event -> exitApp());
 		changeButton.addActionListener		(event -> changeDuration());
-		exportTextButton.addActionListener	(event -> exportText());
+		exportTextButton.addActionListener	(event -> {
+			try {
+				exportText();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 		
 		JMenuBar menuBar = new JMenuBar();
 				
@@ -248,27 +267,70 @@ public class GUI extends JFrame{
 		for(int i=0; i<ar.size();i++) 
 		{
 		out+= "Path #" + (i+1) + ": " + ar.get(i) + "\t Duration: " + pathDuration.get(i)+"\n";	
+	
+		paths.put(ar.get(i), pathDuration.get(i));
+	
+		
+				
 		}
 		activityTextArea.append("\nList of Paths: \n\n" + out);
 	}
-	/*
-	 * 
-	 */
+	//critical path
 	private void criticalPath(){
-		//refresh 
-		displayAll();
+		process();
 		
+		String critical = "";
+		
+		Entry<String,Integer> max = null;
 
-		// needs to be updated to only display the critical path
+		for(Entry<String,Integer> entry : paths.entrySet()) {
+		    
+			if (max == null || entry.getValue() > max.getValue()) {
+		        max = entry;
+		        critical = entry.toString().replaceAll("=", ": ");
+			}else if(entry.getValue() == max.getValue()) {
+				critical+= "\n" +entry.toString().replaceAll("=", ": ");
+				
+			}
+		}
 		
-			
-		activityTextArea.append("\nCritical Paths is/are: \n\n");
+		displayAll();
+	
+		activityTextArea.append("\nCritical Paths is/are: \n\n"+critical);
 	}	
 	/*
 	 * Text file creation
 	 */
-	private void exportText(){
+	private void exportText() throws IOException{
+		TreeMap<String, Integer> sorted = new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER);
+		filename = exportTextField.getText();
 		
+		try {
+		Report data = new Report( filename+".txt" , false );
+	
+			if (!paths.isEmpty()) {
+			
+			String l;
+			String s;
+			l = paths.toString().substring(1);
+			l = l.replaceAll("=", "\tDuration:");
+			
+			for(Activity act : activityList) {
+				sorted.put(act.getName(), act.getDuration());
+			}
+			
+			s = sorted.toString().replaceAll(",", "\n");
+			s = s.replace('=', ':');
+			data.Report(filename);
+			
+			Report add = new Report( filename+".txt" , true);
+			add.Report(s.substring(1, sorted.toString().length()-1));
+			add.Report(l.replaceAll(",", "\n"));
+			
+			}		
+		}catch (Exception e) {
+			System.out.println(e.getMessage() );
+		}	
 	}	
 	/*
 	 * change the Path Duration
@@ -399,6 +461,10 @@ public class GUI extends JFrame{
 		while (!pathDuration.isEmpty()) {
 			pathDuration.clear();
 	    }
+		while (!paths.isEmpty()) {
+			paths.clear();
+		}	
+		
 		nameTextField.setText("");
 		durationTextField.setText("");
 		dependenciesTextField.setText("");
@@ -465,7 +531,6 @@ public class GUI extends JFrame{
 			}	
 		});
 	
-
 	menu1.add(restartItem);
 	menu1.add(exitItem);
 	menuBar.add(menu1);
@@ -495,7 +560,6 @@ for(Activity act : activityList)
 	}
 	
 }
-
 private void process(Activity first){
 /*	String all="";
 String full="";
@@ -526,7 +590,6 @@ for(Activity act : activityList) {
 	if(act.getName().compareToIgnoreCase(nameTextField.getText())==0)
 		isUnique=false;
 }
-
 if(isUnique) 
 {
 	for(int i=0; i<activityList.size();i++)
@@ -544,7 +607,6 @@ if(isUnique)
 	
 	
 }
-
 	
 for(int r=0; r<activityList.size(); r++)
 {
@@ -557,6 +619,5 @@ if(first.getName()==currDependencies[i])
 	process(activityList.get(r));
 }	
 }
-
 }
 */	

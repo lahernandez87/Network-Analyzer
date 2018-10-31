@@ -1,4 +1,4 @@
-package GUI;
+package phase;
  public class Activity{
  	
 	private String name;
@@ -54,6 +54,10 @@ package GUI;
 	public String toString ()
 	{
 		return name + "\t" + duration + "\t" + dependencies;
+	}
+	public String activity() {
+		
+		return name +"\t" +duration;
 	}
 	
 }
