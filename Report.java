@@ -30,8 +30,9 @@ public void Report(String line) throws IOException {
 	
 	
 	if(line.compareTo(path.replaceAll(".txt", "")) ==0) {
-		printl.print(line);
-		printl.println("\tRan on: "+format.format(date) );
+		printl.print("Title:  " +line + "\n");
+		//printl.print(line);
+		printl.println("Created on: "+format.format(date) );
 	
 	}else if (line.contains("->") ) {
 		printl.println("List of paths: \n " +line.replace('}', ' ') +"\n");
